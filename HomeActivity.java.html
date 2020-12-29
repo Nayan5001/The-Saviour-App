@@ -1,0 +1,351 @@
+<html>
+<head>
+<title>HomeActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+.s4 { color: #808080;}
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+HomeActivity.java</font>
+</center></td></tr></table>
+<pre><a name="l1"><span class="ln">1    </span></a><span class="s0">package </span><span class="s1">com.example.driversafety</span><span class="s0">;</span>
+<a name="l2"><span class="ln">2    </span></a>
+<a name="l3"><span class="ln">3    </span></a><span class="s0">import </span><span class="s1">android.Manifest</span><span class="s0">;</span>
+<a name="l4"><span class="ln">4    </span></a><span class="s0">import </span><span class="s1">android.app.Activity</span><span class="s0">;</span>
+<a name="l5"><span class="ln">5    </span></a><span class="s0">import </span><span class="s1">android.content.ContentResolver</span><span class="s0">;</span>
+<a name="l6"><span class="ln">6    </span></a><span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<a name="l7"><span class="ln">7    </span></a><span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<a name="l8"><span class="ln">8    </span></a><span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<a name="l9"><span class="ln">9    </span></a><span class="s0">import </span><span class="s1">android.content.pm.PackageManager</span><span class="s0">;</span>
+<a name="l10"><span class="ln">10   </span></a><span class="s0">import </span><span class="s1">android.database.Cursor</span><span class="s0">;</span>
+<a name="l11"><span class="ln">11   </span></a><span class="s0">import </span><span class="s1">android.location.Location</span><span class="s0">;</span>
+<a name="l12"><span class="ln">12   </span></a><span class="s0">import </span><span class="s1">android.location.LocationListener</span><span class="s0">;</span>
+<a name="l13"><span class="ln">13   </span></a><span class="s0">import </span><span class="s1">android.location.LocationManager</span><span class="s0">;</span>
+<a name="l14"><span class="ln">14   </span></a><span class="s0">import </span><span class="s1">android.net.Uri</span><span class="s0">;</span>
+<a name="l15"><span class="ln">15   </span></a><span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<a name="l16"><span class="ln">16   </span></a><span class="s0">import </span><span class="s1">android.provider.ContactsContract</span><span class="s0">;</span>
+<a name="l17"><span class="ln">17   </span></a><span class="s0">import </span><span class="s1">android.telephony.SmsManager</span><span class="s0">;</span>
+<a name="l18"><span class="ln">18   </span></a><span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<a name="l19"><span class="ln">19   </span></a><span class="s0">import </span><span class="s1">android.view.Menu</span><span class="s0">;</span>
+<a name="l20"><span class="ln">20   </span></a><span class="s0">import </span><span class="s1">android.view.MenuInflater</span><span class="s0">;</span>
+<a name="l21"><span class="ln">21   </span></a><span class="s0">import </span><span class="s1">android.view.MenuItem</span><span class="s0">;</span>
+<a name="l22"><span class="ln">22   </span></a><span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<a name="l23"><span class="ln">23   </span></a><span class="s0">import </span><span class="s1">android.view.WindowManager</span><span class="s0">;</span>
+<a name="l24"><span class="ln">24   </span></a><span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<a name="l25"><span class="ln">25   </span></a><span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<a name="l26"><span class="ln">26   </span></a><span class="s0">import </span><span class="s1">android.widget.ProgressBar</span><span class="s0">;</span>
+<a name="l27"><span class="ln">27   </span></a><span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+<a name="l28"><span class="ln">28   </span></a>
+<a name="l29"><span class="ln">29   </span></a><span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<a name="l30"><span class="ln">30   </span></a><span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+<a name="l31"><span class="ln">31   </span></a><span class="s0">import </span><span class="s1">androidx.cardview.widget.CardView</span><span class="s0">;</span>
+<a name="l32"><span class="ln">32   </span></a><span class="s0">import </span><span class="s1">androidx.core.app.ActivityCompat</span><span class="s0">;</span>
+<a name="l33"><span class="ln">33   </span></a><span class="s0">import </span><span class="s1">androidx.core.content.ContextCompat</span><span class="s0">;</span>
+<a name="l34"><span class="ln">34   </span></a><span class="s0">import </span><span class="s1">androidx.loader.content.CursorLoader</span><span class="s0">;</span>
+<a name="l35"><span class="ln">35   </span></a>
+<a name="l36"><span class="ln">36   </span></a><span class="s0">import </span><span class="s1">com.android.volley.Request</span><span class="s0">;</span>
+<a name="l37"><span class="ln">37   </span></a><span class="s0">import </span><span class="s1">com.android.volley.RequestQueue</span><span class="s0">;</span>
+<a name="l38"><span class="ln">38   </span></a><span class="s0">import </span><span class="s1">com.android.volley.Response</span><span class="s0">;</span>
+<a name="l39"><span class="ln">39   </span></a><span class="s0">import </span><span class="s1">com.android.volley.VolleyError</span><span class="s0">;</span>
+<a name="l40"><span class="ln">40   </span></a><span class="s0">import </span><span class="s1">com.android.volley.toolbox.JsonObjectRequest</span><span class="s0">;</span>
+<a name="l41"><span class="ln">41   </span></a><span class="s0">import </span><span class="s1">com.android.volley.toolbox.Volley</span><span class="s0">;</span>
+<a name="l42"><span class="ln">42   </span></a>
+<a name="l43"><span class="ln">43   </span></a><span class="s0">import </span><span class="s1">org.json.JSONArray</span><span class="s0">;</span>
+<a name="l44"><span class="ln">44   </span></a><span class="s0">import </span><span class="s1">org.json.JSONException</span><span class="s0">;</span>
+<a name="l45"><span class="ln">45   </span></a><span class="s0">import </span><span class="s1">org.json.JSONObject</span><span class="s0">;</span>
+<a name="l46"><span class="ln">46   </span></a>
+<a name="l47"><span class="ln">47   </span></a><span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<a name="l48"><span class="ln">48   </span></a><span class="s0">import </span><span class="s1">java.util.Timer</span><span class="s0">;</span>
+<a name="l49"><span class="ln">49   </span></a><span class="s0">import </span><span class="s1">java.util.TimerTask</span><span class="s0">;</span>
+<a name="l50"><span class="ln">50   </span></a>
+<a name="l51"><span class="ln">51   </span></a><span class="s0">public class </span><span class="s1">HomeActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+<a name="l52"><span class="ln">52   </span></a>    <span class="s0">private </span><span class="s1">Double lat</span><span class="s0">, </span><span class="s1">lon</span><span class="s0">;</span>
+<a name="l53"><span class="ln">53   </span></a>    <span class="s1">LocationManager locationManager</span><span class="s0">;</span>
+<a name="l54"><span class="ln">54   </span></a>    <span class="s1">LocationListener locationListener</span><span class="s0">;</span>
+<a name="l55"><span class="ln">55   </span></a>
+<a name="l56"><span class="ln">56   </span></a>    <span class="s0">final </span><span class="s1">String TAG = </span><span class="s2">&quot;Contact Tag&quot;</span><span class="s0">;</span>
+<a name="l57"><span class="ln">57   </span></a>    <span class="s0">private  int </span><span class="s1">PICK_CONTACT=</span><span class="s3">1</span><span class="s0">;</span>
+<a name="l58"><span class="ln">58   </span></a>    <span class="s1">SharedPreferences sharedPreferences</span><span class="s0">;</span>
+<a name="l59"><span class="ln">59   </span></a>    <span class="s1">ArrayList&lt;String&gt;phoneToSMS</span><span class="s0">;</span>
+<a name="l60"><span class="ln">60   </span></a>    <span class="s1">String str</span><span class="s0">;</span>
+<a name="l61"><span class="ln">61   </span></a>
+<a name="l62"><span class="ln">62   </span></a>    <span class="s0">private </span><span class="s1">ProgressBar progressBar</span><span class="s0">;</span>
+<a name="l63"><span class="ln">63   </span></a>    <span class="s0">private </span><span class="s1">RequestQueue requestQueue</span><span class="s0">;</span>
+<a name="l64"><span class="ln">64   </span></a>    <span class="s1">String Latitude</span><span class="s0">;</span>
+<a name="l65"><span class="ln">65   </span></a>    <span class="s1">String Longitude</span><span class="s0">;</span>
+<a name="l66"><span class="ln">66   </span></a>
+<a name="l67"><span class="ln">67   </span></a>       <span class="s4">/* super.onActivityResult(requestCode, resultCode, data); 
+<a name="l68"><span class="ln">68   </span></a>        switch (requestCode) { 
+<a name="l69"><span class="ln">69   </span></a>            case (1) : 
+<a name="l70"><span class="ln">70   </span></a>                if (resultCode == Activity.RESULT_OK) { 
+<a name="l71"><span class="ln">71   </span></a>                    Uri contactData = data.getData(); 
+<a name="l72"><span class="ln">72   </span></a>                    ContentResolver cr = getContentResolver(); 
+<a name="l73"><span class="ln">73   </span></a>                    Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, 
+<a name="l74"><span class="ln">74   </span></a>                            null, null, null); 
+<a name="l75"><span class="ln">75   </span></a>                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID)); 
+<a name="l76"><span class="ln">76   </span></a>                    Cursor c = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +&quot; = &quot;+ id,null, null); 
+<a name="l77"><span class="ln">77   </span></a>                    if (c.moveToFirst()) { 
+<a name="l78"><span class="ln">78   </span></a>                        String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)); 
+<a name="l79"><span class="ln">79   </span></a>                        // TODO Whatever you want to do with the selected contact name. 
+<a name="l80"><span class="ln">80   </span></a>                        phoneToSMS[i++]=name; 
+<a name="l81"><span class="ln">81   </span></a>                    } 
+<a name="l82"><span class="ln">82   </span></a>                } 
+<a name="l83"><span class="ln">83   </span></a>                break; 
+<a name="l84"><span class="ln">84   </span></a>        } 
+<a name="l85"><span class="ln">85   </span></a>    }*/</span>
+<a name="l86"><span class="ln">86   </span></a>        <span class="s4">/*ContentResolver cr = getContentResolver(); 
+<a name="l87"><span class="ln">87   </span></a>        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, 
+<a name="l88"><span class="ln">88   </span></a>                null, null, null); 
+<a name="l89"><span class="ln">89   </span></a>        if (cur.getCount() &gt; 0) { 
+<a name="l90"><span class="ln">90   </span></a>            while (cur.moveToNext()) { 
+<a name="l91"><span class="ln">91   </span></a>                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID)); 
+<a name="l92"><span class="ln">92   </span></a>                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)); 
+<a name="l93"><span class="ln">93   </span></a> 
+<a name="l94"><span class="ln">94   </span></a>                if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) &gt; 0) { 
+<a name="l95"><span class="ln">95   </span></a>                    // Query phone here. Covered next 
+<a name="l96"><span class="ln">96   </span></a>                    Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + &quot; = &quot; + id, null, null); 
+<a name="l97"><span class="ln">97   </span></a>                    while (phones.moveToNext()) { 
+<a name="l98"><span class="ln">98   </span></a>                        String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)); 
+<a name="l99"><span class="ln">99   </span></a>                        phoneToSMS[i++] = phoneNumber; 
+<a name="l100"><span class="ln">100  </span></a>                    } 
+<a name="l101"><span class="ln">101  </span></a>                    phones.close(); 
+<a name="l102"><span class="ln">102  </span></a>                } 
+<a name="l103"><span class="ln">103  </span></a>            } 
+<a name="l104"><span class="ln">104  </span></a>        } 
+<a name="l105"><span class="ln">105  </span></a>    } 
+<a name="l106"><span class="ln">106  </span></a> 
+<a name="l107"><span class="ln">107  </span></a> 
+<a name="l108"><span class="ln">108  </span></a> 
+<a name="l109"><span class="ln">109  </span></a> 
+<a name="l110"><span class="ln">110  </span></a>       /* if (requestCode == PICK_CONTACT &amp;&amp; resultCode == Activity.RESULT_OK) { 
+<a name="l111"><span class="ln">111  </span></a>            // Get the URI and query the content provider for the phone number 
+<a name="l112"><span class="ln">112  </span></a>            Uri contactData = data.getData(); 
+<a name="l113"><span class="ln">113  </span></a>            Cursor c = managedQuery(contactData, null, null, null, null); 
+<a name="l114"><span class="ln">114  </span></a>            if (c.moveToFirst()) { 
+<a name="l115"><span class="ln">115  </span></a>                String name = c.getString(c.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)); 
+<a name="l116"><span class="ln">116  </span></a>                // TODO Whatever you want to do with the selected contact name. 
+<a name="l117"><span class="ln">117  </span></a>                phoneToSMS[i++] = name; 
+<a name="l118"><span class="ln">118  </span></a>            } 
+<a name="l119"><span class="ln">119  </span></a>            //String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}; 
+<a name="l120"><span class="ln">120  </span></a>            //ContentResolver resolvr = getContentResolver(); 
+<a name="l121"><span class="ln">121  </span></a>            // Cursor cursor = resolvr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, null); 
+<a name="l122"><span class="ln">122  </span></a> 
+<a name="l123"><span class="ln">123  </span></a>            // If the cursor returned is valid, get the phone number 
+<a name="l124"><span class="ln">124  </span></a>            // if (cursor != null &amp;&amp; cursor.moveToFirst()) { 
+<a name="l125"><span class="ln">125  </span></a>            //int numberIndex = cursor.getColumnIndex(ContactsContract.PhoneLookup.NORMALIZED_NUMBER); 
+<a name="l126"><span class="ln">126  </span></a>            //String number = cursor.getString(numberIndex); 
+<a name="l127"><span class="ln">127  </span></a>            // Do something with the phone number*/</span>
+<a name="l128"><span class="ln">128  </span></a>
+<a name="l129"><span class="ln">129  </span></a>
+<a name="l130"><span class="ln">130  </span></a>                    <span class="s0">final int </span><span class="s1">MY_PERMISSIONS_REQUEST_SEND_SMS = </span><span class="s3">1</span><span class="s0">;</span>
+<a name="l131"><span class="ln">131  </span></a>                    <span class="s1">CardView a</span><span class="s0">, </span><span class="s1">b</span><span class="s0">, </span><span class="s1">c</span><span class="s0">, </span><span class="s1">d</span><span class="s0">;</span>
+<a name="l132"><span class="ln">132  </span></a>                    <span class="s1">ImageView p</span><span class="s0">,</span><span class="s1">q</span><span class="s0">;</span>
+<a name="l133"><span class="ln">133  </span></a>                    <span class="s1">Button button</span><span class="s0">;</span>
+<a name="l134"><span class="ln">134  </span></a>
+<a name="l135"><span class="ln">135  </span></a>    <span class="s1">@Override</span>
+<a name="l136"><span class="ln">136  </span></a>    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+<a name="l137"><span class="ln">137  </span></a>        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+<a name="l138"><span class="ln">138  </span></a>
+<a name="l139"><span class="ln">139  </span></a>        <span class="s1">setContentView(R.layout.activity_home)</span><span class="s0">;</span>
+<a name="l140"><span class="ln">140  </span></a>        <span class="s0">if </span><span class="s1">(ActivityCompat.checkSelfPermission(</span><span class="s0">this,</span>
+<a name="l141"><span class="ln">141  </span></a>                <span class="s1">Manifest.permission.SEND_SMS)</span>
+<a name="l142"><span class="ln">142  </span></a>                <span class="s1">!= PackageManager.PERMISSION_GRANTED) {</span>
+<a name="l143"><span class="ln">143  </span></a>            <span class="s1">ActivityCompat.requestPermissions(</span><span class="s0">this,</span>
+<a name="l144"><span class="ln">144  </span></a>                    <span class="s0">new </span><span class="s1">String[]{Manifest.permission.SEND_SMS}</span><span class="s0">,</span>
+<a name="l145"><span class="ln">145  </span></a>                    <span class="s1">MY_PERMISSIONS_REQUEST_SEND_SMS)</span><span class="s0">;</span>
+<a name="l146"><span class="ln">146  </span></a>        <span class="s1">}</span>
+<a name="l147"><span class="ln">147  </span></a>
+<a name="l148"><span class="ln">148  </span></a>
+<a name="l149"><span class="ln">149  </span></a>
+<a name="l150"><span class="ln">150  </span></a>        <span class="s1">sharedPreferences=</span><span class="s0">this</span><span class="s1">.getSharedPreferences(</span><span class="s2">&quot;com.example.driversafety&quot;</span><span class="s0">,</span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+<a name="l151"><span class="ln">151  </span></a>        <span class="s1">phoneToSMS=</span><span class="s0">new </span><span class="s1">ArrayList&lt;String&gt;()</span><span class="s0">;</span>
+<a name="l152"><span class="ln">152  </span></a>
+<a name="l153"><span class="ln">153  </span></a>
+<a name="l154"><span class="ln">154  </span></a>
+<a name="l155"><span class="ln">155  </span></a>        <span class="s1">a=findViewById(R.id.cv1)</span><span class="s0">;</span>
+<a name="l156"><span class="ln">156  </span></a>        <span class="s1">b=findViewById(R.id.cv2)</span><span class="s0">;</span>
+<a name="l157"><span class="ln">157  </span></a>        <span class="s1">c=findViewById(R.id.cv3)</span><span class="s0">;</span>
+<a name="l158"><span class="ln">158  </span></a>        <span class="s1">p=findViewById(R.id.music)</span><span class="s0">;</span>
+<a name="l159"><span class="ln">159  </span></a>        <span class="s1">q=findViewById(R.id.news)</span><span class="s0">;</span>
+<a name="l160"><span class="ln">160  </span></a>        <span class="s1">button=findViewById(R.id.button)</span><span class="s0">;</span>
+<a name="l161"><span class="ln">161  </span></a>
+<a name="l162"><span class="ln">162  </span></a>       <span class="s1">button.setEnabled(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l163"><span class="ln">163  </span></a>        <span class="s1">a.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+<a name="l164"><span class="ln">164  </span></a>            <span class="s1">@Override</span>
+<a name="l165"><span class="ln">165  </span></a>            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+<a name="l166"><span class="ln">166  </span></a>                <span class="s1">Intent intent=</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">,<a href="GoogleMapsActivity.java.html">GoogleMapsActivity</a></span><span class="s1">.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l167"><span class="ln">167  </span></a>                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+<a name="l168"><span class="ln">168  </span></a>            <span class="s1">}</span>
+<a name="l169"><span class="ln">169  </span></a>        <span class="s1">})</span><span class="s0">;</span>
+<a name="l170"><span class="ln">170  </span></a>        <span class="s1">b.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+<a name="l171"><span class="ln">171  </span></a>            <span class="s1">@Override</span>
+<a name="l172"><span class="ln">172  </span></a>            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+<a name="l173"><span class="ln">173  </span></a>                <span class="s1">Intent intent=</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">,<a href="AccidentData.java.html">AccidentData</a></span><span class="s1">.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l174"><span class="ln">174  </span></a>                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+<a name="l175"><span class="ln">175  </span></a>            <span class="s1">}</span>
+<a name="l176"><span class="ln">176  </span></a>        <span class="s1">})</span><span class="s0">;</span>
+<a name="l177"><span class="ln">177  </span></a>        <span class="s1">c.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+<a name="l178"><span class="ln">178  </span></a>            <span class="s1">@Override</span>
+<a name="l179"><span class="ln">179  </span></a>            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+<a name="l180"><span class="ln">180  </span></a>                <span class="s1">Intent intent=</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">,<a href="DrivingInstruction.java.html">DrivingInstruction</a></span><span class="s1">.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l181"><span class="ln">181  </span></a>                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+<a name="l182"><span class="ln">182  </span></a>            <span class="s1">}</span>
+<a name="l183"><span class="ln">183  </span></a>        <span class="s1">})</span><span class="s0">;</span>
+<a name="l184"><span class="ln">184  </span></a>        <span class="s1">p.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+<a name="l185"><span class="ln">185  </span></a>            <span class="s1">@Override</span>
+<a name="l186"><span class="ln">186  </span></a>            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+<a name="l187"><span class="ln">187  </span></a>                <span class="s1">Intent intent=</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">,<a href="Entertainment.java.html">Entertainment</a></span><span class="s1">.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l188"><span class="ln">188  </span></a>                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+<a name="l189"><span class="ln">189  </span></a>            <span class="s1">}</span>
+<a name="l190"><span class="ln">190  </span></a>        <span class="s1">})</span><span class="s0">;</span>
+<a name="l191"><span class="ln">191  </span></a>        <span class="s1">q.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+<a name="l192"><span class="ln">192  </span></a>            <span class="s1">@Override</span>
+<a name="l193"><span class="ln">193  </span></a>            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+<a name="l194"><span class="ln">194  </span></a>                <span class="s1">Intent intent=</span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">,<a href="News.java.html">News</a></span><span class="s1">.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l195"><span class="ln">195  </span></a>                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+<a name="l196"><span class="ln">196  </span></a>            <span class="s1">}</span>
+<a name="l197"><span class="ln">197  </span></a>        <span class="s1">})</span><span class="s0">;</span>
+<a name="l198"><span class="ln">198  </span></a>        <span class="s1">requestQueue = Volley.newRequestQueue(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l199"><span class="ln">199  </span></a>        <span class="s1">JsonObjectRequest jsonObjectRequest1 = </span><span class="s0">new </span><span class="s1">JsonObjectRequest(Request.Method.GET</span><span class="s0">, </span><span class="s2">&quot;https://api.thingspeak.com/channels/1238071/fields/2.json?api_key=CEFR1CTC5R23FC4D&amp;results=2&quot;</span><span class="s0">,</span>
+<a name="l200"><span class="ln">200  </span></a>                <span class="s0">null, new </span><span class="s1">Response.Listener&lt;JSONObject&gt;() {</span>
+<a name="l201"><span class="ln">201  </span></a>            <span class="s1">@Override</span>
+<a name="l202"><span class="ln">202  </span></a>            <span class="s0">public void </span><span class="s1">onResponse(JSONObject response) {</span>
+<a name="l203"><span class="ln">203  </span></a>
+<a name="l204"><span class="ln">204  </span></a>                <span class="s0">try </span><span class="s1">{</span>
+<a name="l205"><span class="ln">205  </span></a>
+<a name="l206"><span class="ln">206  </span></a>                    <span class="s1">JSONArray jsonArray = response.getJSONArray(</span><span class="s2">&quot;feeds&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l207"><span class="ln">207  </span></a>                    <span class="s1">JSONObject jsonObject = jsonArray.getJSONObject(</span><span class="s3">1</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l208"><span class="ln">208  </span></a>                    <span class="s1">Longitude = jsonObject.getString(</span><span class="s2">&quot;field2&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l209"><span class="ln">209  </span></a>                <span class="s1">} </span><span class="s0">catch </span><span class="s1">(JSONException e) {</span>
+<a name="l210"><span class="ln">210  </span></a>                    <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+<a name="l211"><span class="ln">211  </span></a>
+<a name="l212"><span class="ln">212  </span></a>                <span class="s1">}</span>
+<a name="l213"><span class="ln">213  </span></a>            <span class="s1">}</span>
+<a name="l214"><span class="ln">214  </span></a>        <span class="s1">}</span><span class="s0">, new </span><span class="s1">Response.ErrorListener() {</span>
+<a name="l215"><span class="ln">215  </span></a>            <span class="s1">@Override</span>
+<a name="l216"><span class="ln">216  </span></a>            <span class="s0">public void </span><span class="s1">onErrorResponse(VolleyError error) {</span>
+<a name="l217"><span class="ln">217  </span></a>
+<a name="l218"><span class="ln">218  </span></a>
+<a name="l219"><span class="ln">219  </span></a>            <span class="s1">}</span>
+<a name="l220"><span class="ln">220  </span></a>        <span class="s1">})</span><span class="s0">;</span>
+<a name="l221"><span class="ln">221  </span></a>        <span class="s1">requestQueue.add(jsonObjectRequest1)</span><span class="s0">;</span>
+<a name="l222"><span class="ln">222  </span></a>
+<a name="l223"><span class="ln">223  </span></a>        <span class="s1">JsonObjectRequest jsonObjectRequest2 = </span><span class="s0">new </span><span class="s1">JsonObjectRequest(Request.Method.GET</span><span class="s0">, </span><span class="s2">&quot;https://api.thingspeak.com/channels/1238071/fields/1.json?api_key=CEFR1CTC5R23FC4D&amp;results=2&quot;</span><span class="s0">,</span>
+<a name="l224"><span class="ln">224  </span></a>                <span class="s0">null, new </span><span class="s1">Response.Listener&lt;JSONObject&gt;() {</span>
+<a name="l225"><span class="ln">225  </span></a>            <span class="s1">@Override</span>
+<a name="l226"><span class="ln">226  </span></a>            <span class="s0">public void </span><span class="s1">onResponse(JSONObject response) {</span>
+<a name="l227"><span class="ln">227  </span></a>                <span class="s0">try </span><span class="s1">{</span>
+<a name="l228"><span class="ln">228  </span></a>                    <span class="s1">JSONArray jsonArray = response.getJSONArray(</span><span class="s2">&quot;feeds&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l229"><span class="ln">229  </span></a>                    <span class="s1">JSONObject jsonObject = jsonArray.getJSONObject(</span><span class="s3">1</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l230"><span class="ln">230  </span></a>                    <span class="s1">Latitude = jsonObject.getString(</span><span class="s2">&quot;field1&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l231"><span class="ln">231  </span></a>
+<a name="l232"><span class="ln">232  </span></a>                    <span class="s1">button.setEnabled(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l233"><span class="ln">233  </span></a>                    <span class="s1">Log.d(TAG</span><span class="s0">, </span><span class="s2">&quot;Latitude: &quot; </span><span class="s1">+ Latitude + </span><span class="s2">&quot; Longitude: &quot; </span><span class="s1">+ Longitude)</span><span class="s0">;</span>
+<a name="l234"><span class="ln">234  </span></a>                <span class="s1">} </span><span class="s0">catch </span><span class="s1">(JSONException e) {</span>
+<a name="l235"><span class="ln">235  </span></a>                    <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+<a name="l236"><span class="ln">236  </span></a>                <span class="s1">}</span>
+<a name="l237"><span class="ln">237  </span></a>            <span class="s1">}</span>
+<a name="l238"><span class="ln">238  </span></a>        <span class="s1">}</span><span class="s0">, new </span><span class="s1">Response.ErrorListener() {</span>
+<a name="l239"><span class="ln">239  </span></a>            <span class="s1">@Override</span>
+<a name="l240"><span class="ln">240  </span></a>            <span class="s0">public void </span><span class="s1">onErrorResponse(VolleyError error) {</span>
+<a name="l241"><span class="ln">241  </span></a>
+<a name="l242"><span class="ln">242  </span></a>            <span class="s1">}</span>
+<a name="l243"><span class="ln">243  </span></a>        <span class="s1">})</span><span class="s0">;</span>
+<a name="l244"><span class="ln">244  </span></a>        <span class="s1">requestQueue.add(jsonObjectRequest2)</span><span class="s0">;</span>
+<a name="l245"><span class="ln">245  </span></a>
+<a name="l246"><span class="ln">246  </span></a>    <span class="s1">}</span>
+<a name="l247"><span class="ln">247  </span></a>    <span class="s1">@Override</span>
+<a name="l248"><span class="ln">248  </span></a>    <span class="s0">public boolean </span><span class="s1">onCreateOptionsMenu(Menu menu) {</span>
+<a name="l249"><span class="ln">249  </span></a>        <span class="s1">MenuInflater inflater = getMenuInflater()</span><span class="s0">;</span>
+<a name="l250"><span class="ln">250  </span></a>        <span class="s1">inflater.inflate(R.menu.main_menu</span><span class="s0">, </span><span class="s1">menu)</span><span class="s0">;</span>
+<a name="l251"><span class="ln">251  </span></a>        <span class="s0">return super</span><span class="s1">.onCreateOptionsMenu(menu)</span><span class="s0">;</span>
+<a name="l252"><span class="ln">252  </span></a>    <span class="s1">}</span>
+<a name="l253"><span class="ln">253  </span></a>    <span class="s1">@Override</span>
+<a name="l254"><span class="ln">254  </span></a>    <span class="s0">public boolean </span><span class="s1">onOptionsItemSelected(@NonNull MenuItem item)</span>
+<a name="l255"><span class="ln">255  </span></a>    <span class="s1">{</span>
+<a name="l256"><span class="ln">256  </span></a>        <span class="s0">super</span><span class="s1">.onOptionsItemSelected(item)</span><span class="s0">;</span>
+<a name="l257"><span class="ln">257  </span></a>        <span class="s0">switch </span><span class="s1">(item.getItemId())</span>
+<a name="l258"><span class="ln">258  </span></a>        <span class="s1">{</span>
+<a name="l259"><span class="ln">259  </span></a>            <span class="s0">case </span><span class="s1">R.id.contacts:</span>
+<a name="l260"><span class="ln">260  </span></a>                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Intent.ACTION_PICK</span><span class="s0">, </span><span class="s1">ContactsContract.Contacts.CONTENT_URI)</span><span class="s0">;</span>
+<a name="l261"><span class="ln">261  </span></a>                <span class="s1">intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE)</span><span class="s0">;</span>
+<a name="l262"><span class="ln">262  </span></a>                <span class="s1">startActivityForResult(intent</span><span class="s0">, </span><span class="s3">3</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l263"><span class="ln">263  </span></a>                <span class="s0">return true;</span>
+<a name="l264"><span class="ln">264  </span></a>            <span class="s0">default</span><span class="s1">:</span>
+<a name="l265"><span class="ln">265  </span></a>                <span class="s0">return false;</span>
+<a name="l266"><span class="ln">266  </span></a>        <span class="s1">}</span>
+<a name="l267"><span class="ln">267  </span></a>    <span class="s1">}</span>
+<a name="l268"><span class="ln">268  </span></a>
+<a name="l269"><span class="ln">269  </span></a>    <span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s0">;</span>
+<a name="l270"><span class="ln">270  </span></a>    <span class="s1">@Override</span>
+<a name="l271"><span class="ln">271  </span></a>    <span class="s0">public void </span><span class="s1">onActivityResult(</span><span class="s0">int </span><span class="s1">requestCode</span><span class="s0">, int </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">Intent data) {</span>
+<a name="l272"><span class="ln">272  </span></a>        <span class="s0">super</span><span class="s1">.onActivityResult(requestCode</span><span class="s0">, </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">data)</span><span class="s0">;</span>
+<a name="l273"><span class="ln">273  </span></a>        <span class="s0">if </span><span class="s1">(requestCode == </span><span class="s3">3</span><span class="s1">) {</span>
+<a name="l274"><span class="ln">274  </span></a>            <span class="s0">if </span><span class="s1">(resultCode == Activity.RESULT_OK) {</span>
+<a name="l275"><span class="ln">275  </span></a>                <span class="s1">Uri contactsData = data.getData()</span><span class="s0">;</span>
+<a name="l276"><span class="ln">276  </span></a>                <span class="s1">CursorLoader loader = </span><span class="s0">new </span><span class="s1">CursorLoader(</span><span class="s0">this, </span><span class="s1">contactsData</span><span class="s0">, null, null, null, null</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l277"><span class="ln">277  </span></a>                <span class="s1">Cursor c = loader.loadInBackground()</span><span class="s0">;</span>
+<a name="l278"><span class="ln">278  </span></a>                <span class="s0">if </span><span class="s1">(c.moveToFirst()) {</span>
+<a name="l279"><span class="ln">279  </span></a>                    <span class="s1">String phone_number = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))</span><span class="s0">;</span>
+<a name="l280"><span class="ln">280  </span></a>                    <span class="s1">phoneToSMS.add(phone_number)</span><span class="s0">;</span>
+<a name="l281"><span class="ln">281  </span></a>                    <span class="s0">try </span><span class="s1">{</span>
+<a name="l282"><span class="ln">282  </span></a>
+<a name="l283"><span class="ln">283  </span></a>                            <span class="s1">sharedPreferences.edit().putString(</span><span class="s2">&quot;phoneToSMS&quot;</span><span class="s0">,<a href="ObjectSerializer.java.html">ObjectSerializer</a></span><span class="s1">.serialize(phoneToSMS)).apply()</span><span class="s0">;</span>
+<a name="l284"><span class="ln">284  </span></a>
+<a name="l285"><span class="ln">285  </span></a>                    <span class="s1">}</span>
+<a name="l286"><span class="ln">286  </span></a>                    <span class="s0">catch </span><span class="s1">(Exception e)</span>
+<a name="l287"><span class="ln">287  </span></a>                    <span class="s1">{</span>
+<a name="l288"><span class="ln">288  </span></a>                        <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+<a name="l289"><span class="ln">289  </span></a>                    <span class="s1">}</span>
+<a name="l290"><span class="ln">290  </span></a>                <span class="s1">}</span>
+<a name="l291"><span class="ln">291  </span></a>
+<a name="l292"><span class="ln">292  </span></a>            <span class="s1">}</span>
+<a name="l293"><span class="ln">293  </span></a>        <span class="s1">}</span>
+<a name="l294"><span class="ln">294  </span></a>    <span class="s1">}</span>
+<a name="l295"><span class="ln">295  </span></a>
+<a name="l296"><span class="ln">296  </span></a>    <span class="s0">public void </span><span class="s1">clicked(View v)</span>
+<a name="l297"><span class="ln">297  </span></a>    <span class="s1">{</span>
+<a name="l298"><span class="ln">298  </span></a>        <span class="s1">String phone = </span><span class="s2">&quot;102&quot;</span><span class="s0">;</span>
+<a name="l299"><span class="ln">299  </span></a>        <span class="s1">Intent callIntent = </span><span class="s0">new </span><span class="s1">Intent(Intent.ACTION_DIAL)</span><span class="s0">;</span>
+<a name="l300"><span class="ln">300  </span></a>        <span class="s1">callIntent.setData(Uri.parse(</span><span class="s2">&quot;tel:&quot; </span><span class="s1">+ phone))</span><span class="s0">;</span>
+<a name="l301"><span class="ln">301  </span></a>        <span class="s1">callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)</span><span class="s0">;</span>
+<a name="l302"><span class="ln">302  </span></a>        <span class="s0">this</span><span class="s1">.getApplicationContext().startActivity(callIntent)</span><span class="s0">;</span>
+<a name="l303"><span class="ln">303  </span></a>        <span class="s1">Timer timerSMS = </span><span class="s0">new </span><span class="s1">Timer()</span><span class="s0">;</span>
+<a name="l304"><span class="ln">304  </span></a>        <span class="s1">TimerTask tSMS = </span><span class="s0">new </span><span class="s1">TimerTask() {</span>
+<a name="l305"><span class="ln">305  </span></a>            <span class="s1">@Override</span>
+<a name="l306"><span class="ln">306  </span></a>            <span class="s0">public void </span><span class="s1">run() {</span>
+<a name="l307"><span class="ln">307  </span></a>                <span class="s1">SmsManager sms = SmsManager.getDefault()</span><span class="s0">;</span>
+<a name="l308"><span class="ln">308  </span></a>                <span class="s1">ArrayList&lt;String&gt;temp=</span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+<a name="l309"><span class="ln">309  </span></a>                <span class="s0">try </span><span class="s1">{</span>
+<a name="l310"><span class="ln">310  </span></a>                    <span class="s1">temp=(ArrayList&lt;String&gt;)<a href="ObjectSerializer.java.html">ObjectSerializer</a>.deserialize(sharedPreferences.getString(</span><span class="s2">&quot;phoneToSMS&quot;</span><span class="s0">,<a href="ObjectSerializer.java.html">ObjectSerializer</a></span><span class="s1">.serialize(</span><span class="s0">new </span><span class="s1">ArrayList&lt;String&gt;())))</span><span class="s0">;</span>
+<a name="l311"><span class="ln">311  </span></a>                <span class="s1">}</span>
+<a name="l312"><span class="ln">312  </span></a>                <span class="s0">catch </span><span class="s1">(Exception e)</span>
+<a name="l313"><span class="ln">313  </span></a>                <span class="s1">{</span>
+<a name="l314"><span class="ln">314  </span></a>                    <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+<a name="l315"><span class="ln">315  </span></a>                <span class="s1">}</span>
+<a name="l316"><span class="ln">316  </span></a>                <span class="s1">String url =</span><span class="s2">&quot;https://www.google.com/maps/&quot;</span><span class="s1">+</span><span class="s2">&quot;@&quot;</span><span class="s1">+Latitude+ </span><span class="s2">&quot;,&quot; </span><span class="s1">+Longitude+</span><span class="s2">&quot;,&quot;</span><span class="s1">+</span><span class="s2">&quot;14z&quot;</span><span class="s0">;</span>
+<a name="l317"><span class="ln">317  </span></a>                <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">j &lt;temp.size()</span><span class="s0">; </span><span class="s1">j++)</span>
+<a name="l318"><span class="ln">318  </span></a>                <span class="s1">{</span>
+<a name="l319"><span class="ln">319  </span></a>                    <span class="s1">str=temp.get(j)</span><span class="s0">;</span>
+<a name="l320"><span class="ln">320  </span></a>
+<a name="l321"><span class="ln">321  </span></a>                    <span class="s1">sms.sendTextMessage(str</span><span class="s0">, null, </span><span class="s2">&quot;Help!!!</span><span class="s0">\n</span><span class="s2">&quot;</span><span class="s1">+url</span><span class="s0">, null, null</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l322"><span class="ln">322  </span></a>                <span class="s1">}</span>
+<a name="l323"><span class="ln">323  </span></a>
+<a name="l324"><span class="ln">324  </span></a>            <span class="s1">}</span>
+<a name="l325"><span class="ln">325  </span></a>        <span class="s1">}</span><span class="s0">;</span>
+<a name="l326"><span class="ln">326  </span></a>        <span class="s1">timerSMS.schedule(tSMS</span><span class="s0">,</span><span class="s3">1</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l327"><span class="ln">327  </span></a>        
+<a name="l328"><span class="ln">328  </span></a>    <span class="s1">}</span>
+<a name="l329"><span class="ln">329  </span></a><span class="s1">}</span>
+<a name="l330"><span class="ln">330  </span></a></pre>
+</body>
+</html>
